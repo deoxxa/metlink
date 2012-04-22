@@ -40,6 +40,10 @@ var m = new Metlink("http://iphone.metlinkmelbourne.com.au/services");
 
 m.get_transport_line_list("train", function(err, res) {
   console.log(res);
+
+  m.get_stop_list_from_transport_line(type, res[0].line_name, function(err, res) {
+    console.log(res);
+  });
 });
 ```
 
