@@ -4,7 +4,10 @@ They have seen fit to release an iPhone application that purports to be a
 used it knows otherwise. Luckily for us, however, there's a nifty API backing
 it up, and thanks to <code>metlinkapi</code> on reddit, it's not so hard to decipher.</p>
 
-<p>This library is an abstraction of that API.</p>             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p><a href="http://github.com/mikeal/request">request</a> makes HTTP easy!</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">var</span> <span class="nx">request</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">&quot;request&quot;</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>The only thing exported is the Metlink function. This is the entry point to
+<p>This library is an abstraction of that API.</p>             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>We're using <a href="http://github.com/mikeal/request">request</a> for HTTP requests,
+and node's built-in querystring for building query strings (surprise!). This
+should also work in <a href="http://github.com/substack/node-browserify">browserify</a>.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">var</span> <span class="nx">request</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">&quot;request&quot;</span><span class="p">),</span>
+    <span class="nx">qs</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">&quot;querystring&quot;</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>The only thing exported is the Metlink function. This is the entry point to
 all the functionality of this module.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="nx">Metlink</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>To start off, construct a new Metlink object.</p>
 
 <p>The <code>base_url</code> argument will almost always be
@@ -27,7 +30,11 @@ all the functionality of this module.</p>             </td>             <td clas
 being an <code>Error</code> object if an error occurred, or <code>null</code> if not. The second
 argument is an array of "lines". Each line will have a <code>line_name</code> property,
 which is a string, and a <code>suburbs</code> property, which is an array of strings.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">Metlink</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">get_transport_line_list</span> <span class="o">=</span> <span class="nx">Metlink</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">getTransportLineList</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">type</span><span class="p">,</span> <span class="nx">done</span><span class="p">)</span> <span class="p">{</span>
-  <span class="nx">request</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">base_url</span> <span class="o">+</span> <span class="s2">&quot;/getTransportLineList.php?transportType=&quot;</span> <span class="o">+</span> <span class="nb">encodeURIComponent</span><span class="p">(</span><span class="nx">type</span><span class="p">),</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">xhr</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">args</span> <span class="o">=</span> <span class="nx">qs</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span>
+    <span class="nx">transportType</span><span class="o">:</span> <span class="nx">type</span><span class="p">,</span>
+  <span class="p">});</span>
+
+  <span class="nx">request</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">base_url</span> <span class="o">+</span> <span class="s2">&quot;/getTransportLineList.php?&quot;</span> <span class="o">+</span> <span class="nx">args</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">xhr</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
       <span class="k">return</span> <span class="nx">done</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
     <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">xhr</span><span class="p">.</span><span class="nx">statusCode</span> <span class="o">!==</span> <span class="mi">200</span><span class="p">)</span> <span class="p">{</span>
@@ -41,6 +48,7 @@ which is a string, and a <code>suburbs</code> property, which is an array of str
 
       <span class="k">return</span> <span class="nx">done</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">data</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
         <span class="nx">e</span><span class="p">.</span><span class="nx">suburbs</span> <span class="o">=</span> <span class="nx">e</span><span class="p">.</span><span class="nx">suburbs</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">);</span>
+
         <span class="k">return</span> <span class="nx">e</span><span class="p">;</span>
       <span class="p">}));</span>
     <span class="p">}</span>
@@ -57,7 +65,12 @@ or null on error or success. Upon success, the second argument will be an
 array of objects. Each of these objects will have the following members:
 <code>location_name</code>, <code>suburb</code>, <code>key_id</code> and <code>location_id</code>. All except <code>key_id</code>
 are self-explanatory.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">Metlink</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">get_stop_list_from_transport_line</span> <span class="o">=</span> <span class="nx">Metlink</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">getStopListFromTransportLine</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">type</span><span class="p">,</span> <span class="nx">line</span><span class="p">,</span> <span class="nx">done</span><span class="p">)</span> <span class="p">{</span>
-  <span class="nx">request</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">base_url</span> <span class="o">+</span> <span class="s2">&quot;/getStopListFromTransportLine.php?&quot;</span> <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;transportType=&quot;</span> <span class="o">+</span> <span class="nb">encodeURIComponent</span><span class="p">(</span><span class="nx">type</span><span class="p">),</span> <span class="s2">&quot;transportLine=&quot;</span> <span class="o">+</span> <span class="nb">encodeURIComponent</span><span class="p">(</span><span class="nx">line</span><span class="p">)].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;&amp;&quot;</span><span class="p">),</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">xhr</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">args</span> <span class="o">=</span> <span class="nx">qs</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span>
+    <span class="nx">transportType</span><span class="o">:</span> <span class="nx">type</span><span class="p">,</span>
+    <span class="nx">transportLine</span><span class="o">:</span> <span class="nx">line</span><span class="p">,</span>
+  <span class="p">});</span>
+
+  <span class="nx">request</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">base_url</span> <span class="o">+</span> <span class="s2">&quot;/getStopListFromTransportLine.php?&quot;</span> <span class="o">+</span> <span class="nx">args</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">xhr</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
       <span class="k">return</span> <span class="nx">done</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
     <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">xhr</span><span class="p">.</span><span class="nx">statusCode</span> <span class="o">!==</span> <span class="mi">200</span><span class="p">)</span> <span class="p">{</span>
@@ -69,7 +82,54 @@ are self-explanatory.</p>             </td>             <td class="code">       
         <span class="k">return</span> <span class="nx">done</span><span class="p">(</span><span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;invalid json returned&quot;</span><span class="p">));</span>
       <span class="p">}</span>
 
-      <span class="k">return</span> <span class="nx">done</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">data</span><span class="p">.</span><span class="nx">data</span><span class="p">);</span>
+      <span class="k">return</span> <span class="nx">done</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">data</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">e</span><span class="p">.</span><span class="nx">location_name</span> <span class="o">=</span> <span class="nx">e</span><span class="p">.</span><span class="nx">location_name</span><span class="p">.</span><span class="nx">trim</span><span class="p">();</span>
+
+        <span class="k">return</span> <span class="nx">e</span><span class="p">;</span>
+      <span class="p">}));</span>
+    <span class="p">}</span>
+  <span class="p">});</span>
+<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>Fetch a list of stops based on proximity to a certain location.</p>
+
+<p>The <code>latitude</code> and <code>longitude</code> are regular old decimal representations of
+coordinates.</p>
+
+<p>The <code>types</code> argument is a list of transport types. See <code>getTransportLineList</code>
+for a description of valid types.</p>
+
+<p>The callback is called with the first argument being either an <code>Error</code> object
+or null on error or success. Upon success, the second argument will be an
+array of objects. Each of these objects will have the following members:
+<code>type</code>, <code>location_name</code>, <code>suburb</code>, <code>key_id</code> and <code>location_id</code>, <code>latitude</code>,
+<code>longitude</code>, <code>lines</code> and <code>distance</code>. <code>lines</code> will be an array of strings.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">Metlink</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">get_closest_stops_from_location</span> <span class="o">=</span> <span class="nx">Metlink</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">getClosestStopsFromLocation</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">latitude</span><span class="p">,</span> <span class="nx">longitude</span><span class="p">,</span> <span class="nx">types</span><span class="p">,</span> <span class="nx">done</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="k">typeof</span> <span class="nx">types</span> <span class="o">===</span> <span class="s2">&quot;object&quot;</span> <span class="o">&amp;&amp;</span> <span class="nx">types</span> <span class="k">instanceof</span> <span class="nb">Array</span><span class="p">))</span> <span class="p">{</span>
+    <span class="nx">types</span> <span class="o">=</span> <span class="p">[</span><span class="nx">types</span><span class="p">];</span>
+  <span class="p">}</span>
+
+  <span class="kd">var</span> <span class="nx">args</span> <span class="o">=</span> <span class="nx">qs</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span>
+    <span class="nx">currLat</span><span class="o">:</span> <span class="nx">latitude</span><span class="p">,</span>
+    <span class="nx">currLon</span><span class="o">:</span> <span class="nx">longitude</span><span class="p">,</span>
+    <span class="nx">transportTypes</span><span class="o">:</span> <span class="nx">types</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">),</span>
+  <span class="p">});</span>
+
+  <span class="nx">request</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">base_url</span> <span class="o">+</span> <span class="s2">&quot;/getClosestStopsFromLocation.php?&quot;</span> <span class="o">+</span> <span class="nx">args</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">xhr</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">done</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">xhr</span><span class="p">.</span><span class="nx">statusCode</span> <span class="o">!==</span> <span class="mi">200</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">done</span><span class="p">(</span><span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;request failed&quot;</span><span class="p">));</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="k">try</span> <span class="p">{</span>
+        <span class="nx">data</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+      <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">done</span><span class="p">(</span><span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;invalid json returned&quot;</span><span class="p">));</span>
+      <span class="p">}</span>
+
+      <span class="k">return</span> <span class="nx">done</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">data</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">e</span><span class="p">.</span><span class="nx">location_name</span> <span class="o">=</span> <span class="nx">e</span><span class="p">.</span><span class="nx">location_name</span><span class="p">.</span><span class="nx">trim</span><span class="p">();</span>
+        <span class="nx">e</span><span class="p">.</span><span class="nx">lines</span> <span class="o">=</span> <span class="nx">e</span><span class="p">.</span><span class="nx">lines</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">);</span>
+
+        <span class="k">return</span> <span class="nx">e</span><span class="p">;</span>
+      <span class="p">}));</span>
     <span class="p">}</span>
   <span class="p">});</span>
 <span class="p">};</span>
