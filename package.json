@@ -1,7 +1,7 @@
 {
   "name": "metlink",
   "description": "Abstraction of the API backing Metlink's iPhone app",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": {
     "name": "Conrad Pankoff",
     "email": "deoxxa@fknsrs.biz",
