@@ -1,0 +1,50 @@
+<!DOCTYPE html>  <html> <head>   <title>metlink.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               metlink.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <p>Metlink, now PTV, is the public transport provider in Melbourne, Australia.
+They have seen fit to release an iPhone application that purports to be a
+"one-stop-shop for Victorian public transport information". Anybody who has
+used it knows otherwise. Luckily for us, however, there's a nifty API backing
+it up, and thanks to <code>metlinkapi</code> on reddit, it's not so hard to decipher.</p>
+
+<p>This library is an abstraction of that API.</p>             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p><a href="http://github.com/mikeal/request">request</a> makes HTTP easy!</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">var</span> <span class="nx">request</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">&quot;request&quot;</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>The only thing exported is the Metlink function. This is the entry point to
+all the functionality of this module.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="nx">Metlink</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>To start off, construct a new Metlink object.</p>
+
+<p>The <code>base_url</code> argument will almost always be
+<code>http://iphone.metlinkmelbourne.com.au/services</code>.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">Metlink</span><span class="p">(</span><span class="nx">base_url</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="k">this</span> <span class="k">instanceof</span> <span class="nx">Metlink</span><span class="p">))</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="nx">Metlink</span><span class="p">(</span><span class="nx">base_url</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="k">this</span><span class="p">.</span><span class="nx">base_url</span> <span class="o">=</span> <span class="nx">base_url</span><span class="p">;</span>
+<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>Fetch a list of all available lines.</p>
+
+<p>Valid values for the <code>type</code> argument are: <br />
+* bus <br />
+* nightrider <br />
+* train <br />
+* tram <br />
+* vline  </p>
+
+<p>The callback provided is called in typical node style with the first argument
+being an <code>Error</code> object if an error occurred, or <code>null</code> if not. The second
+argument is an array of "lines". Each line will have a <code>line_name</code> property,
+which is a string, and a <code>suburbs</code> property, which is an array of strings.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">Metlink</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">get_transport_line_list</span> <span class="o">=</span> <span class="nx">Metlink</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">getTransportLineList</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">type</span><span class="p">,</span> <span class="nx">done</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">request</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">base_url</span> <span class="o">+</span> <span class="s2">&quot;/getTransportLineList.php?transportType=&quot;</span> <span class="o">+</span> <span class="nx">type</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">xhr</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">done</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">xhr</span><span class="p">.</span><span class="nx">statusCode</span> <span class="o">!==</span> <span class="mi">200</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">done</span><span class="p">(</span><span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;request failed&quot;</span><span class="p">));</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="k">try</span> <span class="p">{</span>
+        <span class="nx">data</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+      <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">done</span><span class="p">(</span><span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;invalid json returned&quot;</span><span class="p">));</span>
+      <span class="p">}</span>
+
+      <span class="k">return</span> <span class="nx">done</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">data</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">e</span><span class="p">.</span><span class="nx">suburbs</span> <span class="o">=</span> <span class="nx">e</span><span class="p">.</span><span class="nx">suburbs</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">);</span>
+        <span class="k">return</span> <span class="nx">e</span><span class="p">;</span>
+      <span class="p">}));</span>
+    <span class="p">}</span>
+  <span class="p">});</span>
+<span class="p">};</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
