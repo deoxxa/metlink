@@ -1,0 +1,101 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Metlink by deoxxa</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/deoxxa/metlink">Fork On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/deoxxa/metlink/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/deoxxa/metlink/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>Metlink</h1>
+          <p>Remember Metlink? Well it's back! In JS form!</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/deoxxa">deoxxa</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></span>
+        </div>
+
+        <h1>Metlink</h1>
+
+<p>Remember Metlink? Well it's back! In JS form!</p>
+
+<h2>Overview</h2>
+
+<p>Metlink, now PTV, is the public transport provider in Melbourne, Australia.
+They have seen fit to release an iPhone application that purports to be a
+"one-stop-shop for Victorian public transport information". Anybody who has
+used it knows otherwise. Luckily for us, however, there's a nifty API backing
+it up, and thanks to <code>metlinkapi</code> on reddit, it's not so hard to decipher.</p>
+
+<p>This library is an abstraction of that API.</p>
+
+<h2>Installation</h2>
+
+<p>Really easy.</p>
+
+<p><code>$ npm install metlink</code></p>
+
+<p>Or if you want to live on the edge (of commandeering APIs)</p>
+
+<p><code>$ npm install https://github.com/deoxxa/metlink/tarball/master</code></p>
+
+<h2>Documentation</h2>
+
+<p>Check out <code>docs/metlink.html</code></p>
+
+<h2>Example Usage</h2>
+
+<div class="highlight">
+<pre><span class="kd">var</span> <span class="nx">Metlink</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">"./lib/metlink"</span><span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">m</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Metlink</span><span class="p">(</span><span class="s2">"http://iphone.metlinkmelbourne.com.au/services"</span><span class="p">);</span>
+
+<span class="nx">m</span><span class="p">.</span><span class="nx">get_transport_line_list</span><span class="p">(</span><span class="s2">"train"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">res</span><span class="p">);</span>
+<span class="p">});</span>
+</pre>
+</div>
+
+
+<h2>License</h2>
+
+<p>BSD, 3 clause. A copy is included.</p>
+
+<h2>Contact</h2>
+
+<ul>
+<li><a href="http://github.com/deoxxa">github</a></li>
+<li><a href="http://twitter.com/#!/deoxxa">twitter</a></li>
+<li><a href="mailto:deoxxa@fknsrs.biz">email</a></li>
+</ul>
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><!--<![endif]-->
+    
+  </body>
+</html>
