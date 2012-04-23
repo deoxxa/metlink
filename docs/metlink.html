@@ -132,6 +132,40 @@ array of objects. Each of these objects will have the following members:
       <span class="p">}));</span>
     <span class="p">}</span>
   <span class="p">});</span>
+<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>Fetch the directions that trains are running their lines for a location id</p>
+
+<p>The <code>location_id</code> argument is a <code>location_id</code> property of a location returned
+by one of the above methods.</p>
+
+<p>The <code>type</code> argument is a transport type. See <code>getTransportLineList</code> for a
+description of valid types.</p>
+
+<p>The callback is called with the first argument being either an <code>Error</code> object
+or null on error or success. Upon success, the second argument will be an
+array of strings. These strings are the "directions" that the vehicles are
+traveling in.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">Metlink</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">get_directions_for_location_id</span> <span class="o">=</span> <span class="nx">Metlink</span><span class="p">.</span><span class="nx">getDirectionsForLocationId</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">location_id</span><span class="p">,</span> <span class="nx">type</span><span class="p">,</span> <span class="nx">done</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">args</span> <span class="o">=</span> <span class="nx">qs</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span>
+    <span class="nx">locationID</span><span class="o">:</span> <span class="nx">location_id</span><span class="p">,</span>
+    <span class="nx">transportType</span><span class="o">:</span> <span class="nx">type</span><span class="p">,</span>
+  <span class="p">});</span>
+
+  <span class="nx">request</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">base_url</span> <span class="o">+</span> <span class="s2">&quot;/getDirectionsForLocationId.php?&quot;</span> <span class="o">+</span> <span class="nx">args</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">xhr</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">done</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">xhr</span><span class="p">.</span><span class="nx">statusCode</span> <span class="o">!==</span> <span class="mi">200</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">done</span><span class="p">(</span><span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;request failed&quot;</span><span class="p">));</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="k">try</span> <span class="p">{</span>
+        <span class="nx">data</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+      <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">done</span><span class="p">(</span><span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;invalid json returned&quot;</span><span class="p">));</span>
+      <span class="p">}</span>
+
+      <span class="k">return</span> <span class="nx">done</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">data</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">e</span><span class="p">.</span><span class="nx">direction_name</span><span class="p">.</span><span class="nx">trim</span><span class="p">();</span>
+      <span class="p">}));</span>
+    <span class="p">}</span>
+  <span class="p">});</span>
 <span class="p">};</span>
 
 </pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
