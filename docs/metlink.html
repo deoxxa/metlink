@@ -132,7 +132,7 @@ array of objects. Each of these objects will have the following members:
       <span class="p">}));</span>
     <span class="p">}</span>
   <span class="p">});</span>
-<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>Fetch the directions that trains are running their lines for a location id</p>
+<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>Fetch the directions that trains are running their lines for a location id.</p>
 
 <p>The <code>location_id</code> argument is a <code>location_id</code> property of a location returned
 by one of the above methods.</p>
@@ -166,7 +166,7 @@ traveling in.</p>             </td>             <td class="code">               
       <span class="p">}));</span>
     <span class="p">}</span>
   <span class="p">});</span>
-<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>Fetch information about a stop (location) based on its ID</p>
+<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>Fetch information about a stop (location) based on its ID.</p>
 
 <p>The <code>location_id</code> argument is a <code>location_id</code> property of a location returned
 by one of the above methods.</p>
@@ -198,6 +198,50 @@ strings, except <code>lines</code> which is an array of strings.</p>            
 
       <span class="nx">data</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">location_name</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">location_name</span><span class="p">.</span><span class="nx">trim</span><span class="p">();</span>
       <span class="nx">data</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">lines</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">lines</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">);</span>
+
+      <span class="k">return</span> <span class="nx">done</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">data</span><span class="p">.</span><span class="nx">data</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">});</span>
+<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>Fetch the next services for a location after a specified date and time.</p>
+
+<p>The <code>stop_id</code> argument seems to be a <code>location_id</code> property of a location
+returned by one of the above methods. This could be incorrect though (?).</p>
+
+<p>The <code>type</code> argument is a transport type. See <code>getTransportLineList</code> for a
+description of valid types.</p>
+
+<p>The <code>time</code> argument is a <code>Date</code> object. It specifies the lower bound of
+service times you want to retrieve.</p>
+
+<p>The callback is called with the first argument being either an <code>Error</code> object
+or null on error or success. Upon success, the second argument will be an
+array of objects with the following properties: <code>direction</code> and <code>times</code>.
+<code>direction</code> is a string, specifying which direction the service is travelling
+in. <code>times</code> is an array of objects, each having the following properties:
+<code>deptTime</code>, <code>transportLine</code>, <code>runID</code>, <code>numSkipped</code>, <code>secondsFromNow</code>,
+<code>destination</code> and <code>flags</code>. All are strings, except <code>secondsFromNow</code>, which is
+an integer. <code>flags</code> has not been observed with any value so far - its type
+will likely change in the future.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">Metlink</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">get_next_number_of_transports_for_stops</span> <span class="o">=</span> <span class="nx">Metlink</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">getNextNumberOfTransportsForStops</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">stop_id</span><span class="p">,</span> <span class="nx">type</span><span class="p">,</span> <span class="nx">time</span><span class="p">,</span> <span class="nx">done</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">args</span> <span class="o">=</span> <span class="nx">qs</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span>
+    <span class="nx">stopID</span><span class="o">:</span> <span class="nx">stop_id</span><span class="p">,</span>
+    <span class="nx">transportType</span><span class="o">:</span> <span class="nx">type</span><span class="p">,</span>
+    <span class="nx">date</span><span class="o">:</span> <span class="p">[</span><span class="nx">time</span><span class="p">.</span><span class="nx">getFullYear</span><span class="p">(),</span> <span class="p">(</span><span class="s2">&quot;00&quot;</span> <span class="o">+</span> <span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">getMonth</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)).</span><span class="nx">substr</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;00&quot;</span> <span class="o">+</span> <span class="nx">time</span><span class="p">.</span><span class="nx">getDate</span><span class="p">()).</span><span class="nx">substr</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">),</span>
+    <span class="nx">time</span><span class="o">:</span> <span class="p">[(</span><span class="s2">&quot;00&quot;</span> <span class="o">+</span> <span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">getHours</span><span class="p">()</span> <span class="o">%</span> <span class="mi">12</span><span class="p">)).</span><span class="nx">substr</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;00&quot;</span> <span class="o">+</span> <span class="nx">time</span><span class="p">.</span><span class="nx">getMinutes</span><span class="p">()).</span><span class="nx">substr</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="nx">time</span><span class="p">.</span><span class="nx">getHours</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">12</span> <span class="o">?</span> <span class="s2">&quot;AM&quot;</span> <span class="o">:</span> <span class="s2">&quot;PM&quot;</span><span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">),</span>
+  <span class="p">});</span>
+
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">args</span><span class="p">);</span>
+
+  <span class="nx">request</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">base_url</span> <span class="o">+</span> <span class="s2">&quot;/getNextNumberOfTransportsForStops.php?&quot;</span> <span class="o">+</span> <span class="nx">args</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">xhr</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">done</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">xhr</span><span class="p">.</span><span class="nx">statusCode</span> <span class="o">!==</span> <span class="mi">200</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">done</span><span class="p">(</span><span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;request failed&quot;</span><span class="p">));</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="k">try</span> <span class="p">{</span>
+        <span class="nx">data</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+      <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">done</span><span class="p">(</span><span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;invalid json returned&quot;</span><span class="p">));</span>
+      <span class="p">}</span>
 
       <span class="k">return</span> <span class="nx">done</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">data</span><span class="p">.</span><span class="nx">data</span><span class="p">);</span>
     <span class="p">}</span>
